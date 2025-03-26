@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import sys
 from collections.abc import Iterable, Sequence
+from threading import Event
 
 from prompt_toolkit import PromptSession
 
@@ -77,6 +78,7 @@ class CommandProcessor:
         # TODO: add folder(s) from mods
         commands = list(self.collect_commands(folder))
         self.root_command = MetaCommand(commands)
+        self.event = Event()
 
     def run(self) -> None:
         """
@@ -92,7 +94,7 @@ class CommandProcessor:
         )
         session = PromptSession()
 
-        while True:
+        while not self.event.is_set():
             try:
                 line = session.prompt(self.prompt)
                 if line:

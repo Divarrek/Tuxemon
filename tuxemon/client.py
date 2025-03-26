@@ -95,7 +95,6 @@ class LocalPygameClient:
             # control of the game loop and state.
             self.cli = CommandProcessor(local_session)
             thread = Thread(target=self.cli.run)
-            thread.daemon = True
             thread.start()
 
         # Set up rumble support for gamepads
@@ -324,7 +323,13 @@ class LocalPygameClient:
         self.update_states(time_delta)
 
         if self.exit:
-            self.done = True
+            self.quit()
+
+    def quit(self) -> None:
+        self.exit = True
+        self.done = True
+        if self.config.cli:
+            self.cli.event.set()
 
     def release_controls(self) -> None:
         """
@@ -346,7 +351,7 @@ class LocalPygameClient:
         """
         self.state_manager.update(time_delta)
         if self.state_manager.current_state is None:
-            self.exit = True
+            self.quit()
 
     def draw(self, surface: pg.surface.Surface) -> None:
         """
