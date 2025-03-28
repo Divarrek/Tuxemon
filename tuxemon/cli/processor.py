@@ -92,7 +92,8 @@ class CommandProcessor:
             current_command=self.root_command,
             formatter=Formatter(),
         )
-        session = PromptSession()
+        self.prompt_session = PromptSession()
+        session = self.prompt_session
 
         while not self.event.is_set():
             try:
@@ -120,6 +121,10 @@ class CommandProcessor:
 
         event_engine = self.session.client.event_engine
         event_engine.execute_action("quit")
+
+    def stop(self) -> None:
+        self.prompt_session.app.exit()
+        self.event.set()
 
     def collect_commands(self, folder: str) -> Iterable[CLICommand]:
         """

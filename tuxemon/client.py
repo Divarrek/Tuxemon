@@ -326,10 +326,10 @@ class LocalPygameClient:
             self.quit()
 
     def quit(self) -> None:
+        if self.config.cli:
+            self.cli.stop()
         self.exit = True
         self.done = True
-        if self.config.cli:
-            self.cli.event.set()
 
     def release_controls(self) -> None:
         """
