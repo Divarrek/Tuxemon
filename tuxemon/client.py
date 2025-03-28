@@ -302,7 +302,7 @@ class LocalPygameClient:
         self.network_manager.update(time_delta)
 
         # get all the input waiting for use
-        events = self.input_manager.event_queue.process_events()
+        events = self.input_manager.process_events()
 
         # process the events and collect the unused ones
         key_events = list(self.process_events(events))
