@@ -114,16 +114,17 @@ class CommandProcessor:
                             file=sys.stderr,
                         )
             except EOFError:
-                break
+                self.session.client.quit()
             except KeyboardInterrupt:
                 print("Got KeyboardInterrupt")
                 print("Press CTRL-D to quit.")
-
-        event_engine = self.session.client.event_engine
-        event_engine.execute_action("quit")
+                self.session.client.quit()
 
     def stop(self) -> None:
-        self.prompt_session.app.exit()
+        try:
+            self.prompt_session.app.exit()
+        except Exception as e:
+            logger.info("Application is not running")
         self.event.set()
 
     def collect_commands(self, folder: str) -> Iterable[CLICommand]:

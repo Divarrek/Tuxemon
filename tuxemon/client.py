@@ -284,6 +284,7 @@ class LocalPygameClient:
 
             fps_timer, frames = self.handle_fps(clock_tick, fps_timer, frames)
             time.sleep(0.01)
+        self.quit()
 
     def update(self, time_delta: float) -> None:
         """
@@ -322,14 +323,11 @@ class LocalPygameClient:
         # Update the game engine
         self.update_states(time_delta)
 
-        if self.exit:
-            self.quit()
-
     def quit(self) -> None:
         if self.config.cli:
             self.cli.stop()
-        self.exit = True
-        self.done = True
+        event_engine = self.event_engine
+        event_engine.execute_action("quit")
 
     def release_controls(self) -> None:
         """
